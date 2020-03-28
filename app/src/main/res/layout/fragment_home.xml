@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.HomeFragment">
+
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="match_parent"
+        android:layout_height="320dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="214dp"
+        android:layout_above="@+id/capture_image_btn"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:id="@+id/text_display"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="Display Detected Text from image"
+            android:textSize="26dp" />
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/capture_image_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/detect_text_image_btn"
+        android:text="Capture Image"
+        android:textAllCaps="false"
+        android:layout_marginBottom="5dp"
+        android:textSize="17dp"/>
+    <Button
+        android:id="@+id/detect_text_image_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Detect Text"
+        android:textAllCaps="false"
+        android:textSize="17dp"/>
+</RelativeLayout>
+</layout>
