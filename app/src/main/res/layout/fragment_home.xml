@@ -48,5 +48,6 @@
         android:text="Detect Text"
         android:textAllCaps="false"
         android:textSize="17dp"/>
+
 </RelativeLayout>
 </layout>

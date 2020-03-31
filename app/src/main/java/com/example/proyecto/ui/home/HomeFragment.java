@@ -2,6 +2,7 @@ package com.example.proyecto.ui.home;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import com.example.proyecto.R;
 import com.example.proyecto.databinding.FragmentHomeBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
@@ -42,6 +44,7 @@ public class HomeFragment extends Fragment {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private Bitmap imageBitmap;
     private ArrayList<String> datos;
+    FloatingActionButton fab;
     /*text contiene los datos de la foto por eso debe de mandarse por safeargs al proximo fragmento*/
     private String text;
     public View onCreateView(@NonNull LayoutInflater inflater,
