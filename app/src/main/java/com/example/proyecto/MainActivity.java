@@ -34,27 +34,6 @@ public class MainActivity extends AppCompatActivity{
         FloatingActionButton fab = findViewById(R.id.fab);
         imagen = findViewById(R.id.image_view);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                cargarImagen();
-
-            }
-
-            public void cargarImagen(){
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                intent.setType("image/");
-                startActivityForResult(intent.createChooser(intent, "Escoger foto"),10);
-            }
-
-            public void onActivityResult(int requestCode, int resultCode, Intent data) {
-                MainActivity.super.onActivityResult(requestCode, resultCode, data);
-                if (resultCode == RESULT_OK) {
-                    Uri path = data.getData();
-                    imagen.setImageURI(path);
-                }
-            }
-        });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each

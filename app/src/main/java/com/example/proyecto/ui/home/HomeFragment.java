@@ -1,10 +1,13 @@
 package com.example.proyecto.ui.home;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +24,6 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.proyecto.MainActivity;
 import com.example.proyecto.R;
-import com.example.proyecto.databinding.FragmentHomeBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -30,6 +32,18 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextDetector;
 
+
+
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,15 +52,16 @@ import static android.app.Activity.RESULT_OK;
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
-    private Button captureImageBtn, detectTextBtn;
+    private Button captureImageBtn, detectTextBtn, importbtn;
     private ImageView imageView;
     private TextView textView;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private Bitmap imageBitmap;
     private ArrayList<String> datos;
-    FloatingActionButton fab;
+    private FloatingActionButton fab;
     /*text contiene los datos de la foto por eso debe de mandarse por safeargs al proximo fragmento*/
     private String text;
+    private int numero;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
@@ -64,6 +79,10 @@ public class HomeFragment extends Fragment {
         detectTextBtn = root.findViewById(R.id.detect_text_image_btn);
         imageView = root.findViewById(R.id.image_view);
         textView = root.findViewById(R.id.text_display);
+        fab = root.findViewById(R.id.fab2);
+        if(fab == null)
+            numero =2;
+        numero = 0;
 
         captureImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +98,23 @@ public class HomeFragment extends Fragment {
                 detectTextFromImage();
             }
         });
+
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cargarImagen();
+            }
+        });
         return root;
+    }
+
+    public void cargarImagen(){
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/");
+        numero = 1;
+        startActivityForResult(intent.createChooser(intent, "Escoger foto"),10);
+        numero = 0;
     }
 
 
@@ -95,10 +130,19 @@ public class HomeFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            imageBitmap = (Bitmap) extras.get("data");
-            imageView.setImageBitmap(imageBitmap);
+        if(numero == 0) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+                Bundle extras = data.getExtras();
+                imageBitmap = (Bitmap) extras.get("data");
+                imageView.setImageBitmap(imageBitmap);
+            }
+        }
+        else if(numero ==1){
+            if (resultCode == RESULT_OK) {
+                Uri path = data.getData();
+                imageView.setImageURI(path);
+
+            }
         }
     }
 
@@ -132,5 +176,10 @@ public class HomeFragment extends Fragment {
             textView.setText(text);
         }
     }
+
+
+
+
+
 
 }
