@@ -51,8 +51,10 @@ import static android.app.Activity.RESULT_OK;
 
 public class HomeFragment extends Fragment {
 
+    InputStream  inputStream;
+    String[]ids;
     private HomeViewModel homeViewModel;
-    private Button captureImageBtn, detectTextBtn, importbtn;
+    private Button captureImageBtn, detectTextBtn, importbtn, importarexcel;
     private ImageView imageView;
     private TextView textView;
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -79,6 +81,8 @@ public class HomeFragment extends Fragment {
         detectTextBtn = root.findViewById(R.id.detect_text_image_btn);
         imageView = root.findViewById(R.id.image_view);
         textView = root.findViewById(R.id.text_display);
+        importarexcel = root.findViewById(R.id.obtenertextoinfo);
+
         fab = root.findViewById(R.id.fab2);
         if(fab == null)
             numero =2;
@@ -91,6 +95,34 @@ public class HomeFragment extends Fragment {
                 textView.setText("");
             }
         });
+
+        importarexcel.setOnClickListener (new View.OnClickListener() {
+                 @Override
+                 public void onClick(View view) {
+                     inputStream = getResources().openRawResource(R.raw.gabrielculero);
+                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                     try {
+                         String csvLine;
+                         ArrayList<String> contenido = new ArrayList<String>();
+                         while ((csvLine = reader.readLine()) != null) {
+
+                             ids = csvLine.split(",");
+                             contenido.add(csvLine);
+                             textView.setText(contenido.toString());
+
+                         }
+
+
+                     } catch (IOException ex) {
+                         throw new RuntimeException("Error in reading CSV file: " + ex);
+                     }
+
+
+                 }
+             }
+        );
+
 
         detectTextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,6 +205,7 @@ public class HomeFragment extends Fragment {
             for (FirebaseVisionText.Block block : firebaseVisionText.getBlocks()){
                 text += block.getText()+"\n";
             }
+            homeViewModel.setmText(text);
             textView.setText(text);
         }
     }
