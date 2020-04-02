@@ -9,7 +9,7 @@
 
     <string name="menu_home">Principal</string>
     <string name="menu_gallery">Excel</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_slideshow">About us</string>
 
     <string name="home_second">Home Second</string>
 </resources>

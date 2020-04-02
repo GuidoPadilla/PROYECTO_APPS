@@ -86,25 +86,26 @@ public class GalleryFragment extends Fragment {
         botonparagenerar.setOnClickListener (new View.OnClickListener() {
                                                  @Override
                                                  public void onClick(View view) {
-                                                     ArrayList<String> contenido = new ArrayList<String>();
-                                                     ArrayList<String> escaneadosplit = new ArrayList<String>();
+                                                     if(mostrar.getText().toString() != ""){
+                                                         ArrayList<String> contenido = new ArrayList<String>();
+                                                         ArrayList<String> escaneadosplit = new ArrayList<String>();
 
-                                                     int contador = 0;
-                                                     int contador2 = 0;
-                                                     for (int i = 0; i < escaneado.length(); i++) {
-                                                         if (escaneado.charAt(i) == '\n') {
-                                                             contador++;
+                                                         int contador=0;
+                                                         int contador2 =0;
+                                                         for(int i =0; i<escaneado.length();i++){
+                                                             if(escaneado.charAt(i) == '\n'){
+                                                                 contador++;
+                                                             }
+                                                             if(contador ==2){
+                                                                 escaneadosplit.add(escaneado.substring(contador2, i));
+                                                                 contador2 =i;
+                                                                 contador =0;
+                                                             }
+
                                                          }
-                                                         if (contador == 2) {
-                                                             escaneadosplit.add(escaneado.substring(contador2, i));
-                                                             contador2 = i;
-                                                             contador = 0;
-                                                         }
-
-                                                     }
 
 
-                                                     //   String[]escaneadosplit = escaneado.split("\n");
+                                                         //   String[]escaneadosplit = escaneado.split("\n");
                                                      /*CSVReader reader = null;
                                                      try {
                                                          File csvfile = new File(Environment.getExternalStorageDirectory() + mostrar.getText().toString());
@@ -117,93 +118,111 @@ public class GalleryFragment extends Fragment {
                                                      } catch (IOException e) {
                                                          e.printStackTrace();
                                                      }*/
-                                                     InputStream inputStream = null;
-                                                     try {
-                                                         inputStream = getContext().getContentResolver().openInputStream(uris);
-                                                     } catch (FileNotFoundException e) {
-                                                         e.printStackTrace();
-                                                     }
-                                                     /*inputStream = getResources().openRawResource(R.raw.gabrielculero);*/
-                                                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                                                         InputStream  inputStream = null;
+                                                         try {
+                                                             inputStream = getContext().getContentResolver().openInputStream(uris);
+                                                         } catch (FileNotFoundException e) {
+                                                             e.printStackTrace();
+                                                         }
+                                                         /*inputStream = getResources().openRawResource(R.raw.gabrielculero);*/
+                                                         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
 
-                                                     try {
-                                                         String csvLine;
-                                                         while ((csvLine = reader.readLine()) != null) {
+                                                         try {
+                                                             String csvLine;
+                                                             while ((csvLine = reader.readLine()) != null) {
 
-                                                             ids = csvLine.split(",");
-                                                             contenido.add(csvLine);
+                                                                 ids = csvLine.split(",");
+                                                                 contenido.add(csvLine);
+                                                             }
+
+                                                         } catch (IOException ex) {
+                                                             throw new RuntimeException("Error in reading CSV file: " + ex);
                                                          }
 
-                                                     } catch (IOException ex) {
-                                                         throw new RuntimeException("Error in reading CSV file: " + ex);
-                                                     }
+                                                         for(int i =0; i<contenido.size(); i++){
+                                                             if(contenido.get(i).indexOf(";") > 0) {
+                                                                 String palabratemporal = (contenido.get(i).substring(0, contenido.get(i).indexOf(";")));
+                                                                 if (i <= escaneadosplit.size() - 1) {
+                                                                     if (escaneadosplit.get(i).indexOf(contenido.get(i).substring(0, contenido.get(i).indexOf(";"))) > -1) {
 
-                                                     for (int i = 0; i < contenido.size(); i++) {
-                                                         if (contenido.get(i).indexOf(";") > 0) {
-                                                             String palabratemporal = (contenido.get(i).substring(0, contenido.get(i).indexOf(";")));
-                                                             if (i <= escaneadosplit.size() - 1) {
-                                                                 if (escaneadosplit.get(i).indexOf(contenido.get(i).substring(0, contenido.get(i).indexOf(";"))) > -1) {
+                                                                         int posicion = escaneadosplit.get(i).indexOf(contenido.get(i).substring(0, contenido.get(i).indexOf(";")));
+                                                                         String b = escaneadosplit.get(i).substring(palabratemporal.length(), escaneadosplit.get(i).length());
+                                                                         int d = contenido.get(i).indexOf(";") + 1;
+                                                                         contenido.set(i,
+                                                                                 contenido.get(i).substring(0, contenido.get(i).indexOf(";") + 1) + escaneadosplit.get(i).substring(palabratemporal.length(), escaneadosplit.get(i).length()));
 
-                                                                     int posicion = escaneadosplit.get(i).indexOf(contenido.get(i).substring(0, contenido.get(i).indexOf(";")));
-                                                                     String b = escaneadosplit.get(i).substring(palabratemporal.length(), escaneadosplit.get(i).length());
-                                                                     int d = contenido.get(i).indexOf(";") + 1;
-                                                                     contenido.set(i,
-                                                                             contenido.get(i).substring(0, contenido.get(i).indexOf(";") + 1) + escaneadosplit.get(i).substring(palabratemporal.length(), escaneadosplit.get(i).length()));
-
+                                                                     }
                                                                  }
                                                              }
                                                          }
+                                                         String contenidoagregar="";
+                                                         for(int i =0; i<contenido.size();i++){
+                                                             contenidoagregar += contenido.get(i) + ";" + "\n";
+                                                         }
+
+                                                         try {
+                                                             reader.close();
+                                                         } catch (IOException e) {
+                                                             e.printStackTrace();
+                                                         }
+                                                         OutputStream o = null;
+                                                         try {
+                                                             o  = getContext().getContentResolver().openOutputStream(uris);
+                                                         } catch (FileNotFoundException e) {
+                                                             e.printStackTrace();
+                                                         }
+                                                         OutputStreamWriter w = new OutputStreamWriter(o);
+                                                         BufferedWriter wr = new BufferedWriter(w);
+
+                                                         try {
+                                                             reader.close();
+                                                         } catch (IOException e) {
+                                                             e.printStackTrace();
+                                                         }
+                                                         String csv = (Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyCsvFile.csv");
+                                                         CSVWriter writer = null;
+                                                         try
+                                                         {
+
+                                                             writer = new CSVWriter(wr);
+                                                         /*for(int i = 0; i<contenidoagregar.split("\n").length; i++){
+                                                             writer.writeNext(contenidoagregar.split("\n")[i]);
+                                                         }*/
+                                                             List<String[]> entries = Collections.singletonList(contenidoagregar.split(";")); // array of your values
+                                                             for (String[] s: entries
+                                                             ) {
+                                                                 writer.writeNext(s);
+
+                                                             }
+
+                                                             /*writer.writeAll(entries);*/
+
+                                                             writer.close();
+
+                                                             Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                                                             emailIntent.setType("text/plain");
+                                                             emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"email@example.com"});
+                                                             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "subject here");
+                                                             emailIntent.putExtra(Intent.EXTRA_TEXT, "body text");
+
+                                                             File file = new File(csv);
+                                                             Uri uri = Uri.fromFile(file);
+                                                             emailIntent.putExtra(Intent.EXTRA_STREAM, uris);
+                                                             startActivity(Intent.createChooser(emailIntent, "Pick an Email provider"));
+
+                                                         }
+                                                         catch (IOException e)
+                                                         {
+                                                             //error
+                                                         }
+
+
                                                      }
-                                                     String contenidoagregar = "";
-                                                     for (int i = 0; i < contenido.size(); i++) {
-                                                         contenidoagregar += contenido.get(i) + ",";
+                                                     else{
+                                                         return;
                                                      }
 
-                                                     try {
-                                                         reader.close();
-                                                     } catch (IOException e) {
-                                                         e.printStackTrace();
-                                                     }
-                                                     OutputStream o = null;
-                                                     try {
-                                                         o = getContext().getContentResolver().openOutputStream(uris);
-                                                     } catch (FileNotFoundException e) {
-                                                         e.printStackTrace();
-                                                     }
-                                                     OutputStreamWriter w = new OutputStreamWriter(o);
-                                                     BufferedWriter wr = new BufferedWriter(w);
-
-                                                     try {
-                                                         reader.close();
-                                                     } catch (IOException e) {
-                                                         e.printStackTrace();
-                                                     }
-                                                     String csv = (Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyCsvFile.csv");
-                                                     CSVWriter writer = null;
-                                                     try {
-
-                                                         writer = new CSVWriter(wr);
-
-                                                         List<String[]> entries = Collections.singletonList(contenidoagregar.split(",")); // array of your values
-                                                         writer.writeAll(entries);
-
-                                                         writer.close();
-
-                                                         Intent emailIntent = new Intent(Intent.ACTION_SEND);
-                                                         emailIntent.setType("text/plain");
-                                                         emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"email@example.com"});
-                                                         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "subject here");
-                                                         emailIntent.putExtra(Intent.EXTRA_TEXT, "body text");
-
-                                                         File file = new File(csv);
-                                                         Uri uri = Uri.fromFile(file);
-                                                         emailIntent.putExtra(Intent.EXTRA_STREAM, uris);
-                                                         startActivity(Intent.createChooser(emailIntent, "Pick an Email provider"));
-
-                                                     } catch (IOException e) {
-                                                         //error
-                                                     }
                                                  }
                                                  });
 

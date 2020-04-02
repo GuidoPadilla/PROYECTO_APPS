@@ -82,7 +82,6 @@ public class HomeFragment extends Fragment {
         detectTextBtn = root.findViewById(R.id.detect_text_image_btn);
         imageView = root.findViewById(R.id.image_view);
         textView = root.findViewById(R.id.text_display);
-        importarexcel = root.findViewById(R.id.obtenertextoinfo);
 
         fab = root.findViewById(R.id.fab2);
         if(fab == null)
@@ -97,38 +96,16 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        importarexcel.setOnClickListener (new View.OnClickListener() {
-                 @Override
-                 public void onClick(View view) {
-                     inputStream = getResources().openRawResource(R.raw.gabrielculero);
-                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                     try {
-                         String csvLine;
-                         ArrayList<String> contenido = new ArrayList<String>();
-                         while ((csvLine = reader.readLine()) != null) {
-
-                             ids = csvLine.split(",");
-                             contenido.add(csvLine);
-                             textView.setText(contenido.toString());
-
-                         }
-
-
-                     } catch (IOException ex) {
-                         throw new RuntimeException("Error in reading CSV file: " + ex);
-                     }
-
-
-                 }
-             }
-        );
-
-
         detectTextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                detectTextFromImage();
+                if(imageView.getDrawable() != null){
+                    detectTextFromImage();
+                }
+                else{
+                    return;
+                }
+
             }
         });
 
@@ -180,6 +157,7 @@ public class HomeFragment extends Fragment {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
                 imageView.setImageBitmap(imageBitmap);
 
             }
