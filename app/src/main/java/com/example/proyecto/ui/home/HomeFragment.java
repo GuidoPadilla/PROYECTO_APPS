@@ -1,5 +1,6 @@
 package com.example.proyecto.ui.home;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
@@ -67,7 +68,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
+                ViewModelProviders.of(getActivity()).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         /*final TextView textView = root.findViewById(R.id.text_home);
         homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
@@ -136,6 +137,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 cargarImagen();
+                textView.setText("");
             }
         });
         return root;
@@ -162,6 +164,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        numero = 1;
         if(numero == 0) {
             if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
                 Bundle extras = data.getExtras();
@@ -172,7 +175,12 @@ public class HomeFragment extends Fragment {
         else if(numero ==1){
             if (resultCode == RESULT_OK) {
                 Uri path = data.getData();
-                imageView.setImageURI(path);
+                try {
+                    imageBitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),path);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                imageView.setImageBitmap(imageBitmap);
 
             }
         }

@@ -12,16 +12,13 @@ import com.example.proyecto.databinding.FragmentHomeBinding;
 
 public class HomeViewModel extends ViewModel {
 
-    private MutableLiveData<String> mText;
+    private MutableLiveData<String> mText = new MutableLiveData<String>();
 
     public void setmText(String mText){
         this.mText.setValue(mText);
     }
 
     public HomeViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
-
 
 
     }
